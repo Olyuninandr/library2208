@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
+use App\Models\Book;
+use App\Models\Author;
 
 class HomeController extends Controller
 {
@@ -21,8 +24,12 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function getMyBooks()
     {
-        return view('home');
+        $user_id = Auth::user()->id;
+        $booksList = Book::where('created_by', $user_id)
+            ->select(['name', 'id'])
+            ->paginate(10);
+        return view('home', compact('booksList'));
     }
 }
