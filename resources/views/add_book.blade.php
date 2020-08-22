@@ -5,7 +5,7 @@
         @if(isset($book))
             <form method="POST" action="{{ route('book_submit_update', $book->id) }}">
                 @else
-                    <form method="POST" action="{{ route('book_submit') }}">
+                    <form method="POST" action="{{ route('book_submit') }}" enctype="multipart/form-data">
                         @endif
                         @csrf
                         <div class="form-group">
@@ -52,6 +52,24 @@
                                    value="{{ $book->pages ?? '' }}"
                                    placeholder="Количество страниц">
                         </div>
+
+                        <div class="form-group">
+                            <label for="picture">Обложка книги</label>
+                            <input type="file" name="picture" value="{{ $book->picture ?? '' }}"
+                                   class="form-control-file" id="picture">
+                        </div>
+
+                        @if(!empty($book) && isset($book->picture))
+                            <div class="card">
+                                <img src="{{ asset('/storage/'.$book->picture) }}" class="card-img-top">
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        Обложка книги
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
+                        <br>
 
                         <div class="btn-group" role="group" aria-label="Basic example">
                             <a href="{{route('home')}}">

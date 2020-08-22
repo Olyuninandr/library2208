@@ -29,6 +29,7 @@ class HomeController extends Controller
         $user_id = Auth::user()->id;
         $booksList = Book::where('created_by', $user_id)
             ->select(['name', 'id'])
+            ->orderBy('id', 'desc')
             ->paginate(10);
         return view('home', compact('booksList'));
     }

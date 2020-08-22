@@ -13,7 +13,7 @@ class BookController extends Controller
     public function getBooksList($author_id=null)
     {
         if(empty($author_id)) {
-            $booksList = Book::select(['name', 'author_id', 'id'])->paginate(10);
+            $booksList = Book::select(['name', 'author_id', 'id'])->orderBy('id', 'desc')->paginate(10);
         }
 
         else{
@@ -27,18 +27,24 @@ class BookController extends Controller
 
     public function submitBook(BookRequest $request, $id=null)
     {
-        if($id != null) $book = Book::find($id);
-        else $book = new Book();
+
+        if($id != null) {
+            $book = Book::find($id);
+        }
+        else {
+            $book = new Book();
+        }
 
         $book->name = $request->input('name');
         $book->created_by = Auth::user()->id;
         $book->pages = $request->input('pages');
-        $book->short = rtrim($request->input('short'));
+        $book->short = $request->input('short');
         $book->author_id = $request->input('author_id');
+        $book->picture = $request->file('picture')->store('uploads', 'public');
 
         $book->save();
 
-        return redirect()->route('books')->with('success', 'Книга добавлена');
+        return redirect()->route('home')->with('success', 'Книга добавлена');
     }
 
     public function getBook($id)
