@@ -3,7 +3,7 @@
     <div class="container">
 
         @if(isset($book))
-            <form method="POST" action="{{ route('book_submit_update', $book->id) }}">
+            <form method="POST" action="{{ route('book_submit_update', $book->id) }}" enctype="multipart/form-data">
                 @else
                     <form method="POST" action="{{ route('book_submit') }}" enctype="multipart/form-data">
                         @endif
@@ -60,8 +60,8 @@
                         </div>
 
                         @if(!empty($book) && isset($book->picture))
-                            <div class="card">
-                                <img src="{{ asset('/storage/'.$book->picture) }}" class="card-img-top">
+                            <div class="card" style="width: 18rem;">
+                                <img  src="{{ asset('/storage/'.$book->picture) }}" class="card-img-top">
                                 <div class="card-body">
                                     <p class="card-text">
                                         Обложка книги

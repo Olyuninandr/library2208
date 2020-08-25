@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Storage;
+use League\Flysystem\Filesystem;
 use App\Models\Book;
 use App\Models\Author;
 use App\Http\Requests\BookRequest;
@@ -13,9 +15,10 @@ class BookController extends Controller
     public function getBooksList($author_id=null)
     {
         if(empty($author_id)) {
-            $booksList = Book::select(['name', 'author_id', 'id'])->orderBy('id', 'desc')->paginate(10);
+            $booksList = Book::select(['name', 'author_id', 'id'])
+                ->orderBy('id', 'desc')
+                ->paginate(10);
         }
-
         else{
             $booksList = Book::where('author_id', $author_id)
                 ->select(['name', 'author_id', 'id'])
@@ -27,7 +30,6 @@ class BookController extends Controller
 
     public function submitBook(BookRequest $request, $id=null)
     {
-
         if($id != null) {
             $book = Book::find($id);
         }
@@ -65,6 +67,7 @@ class BookController extends Controller
     public function deleteBook($id)
     {
         Book::find($id)->delete();
-        return redirect()->route('home')->with('success','Книга удалена');
+        return redirect()->route('home')
+            ->with('success','Книга удалена');
     }
 }
