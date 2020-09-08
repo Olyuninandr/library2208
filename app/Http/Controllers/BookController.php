@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function getBooksList($author_id=null)
+    public function getBooksList($author_id = null)
     {
         if(empty($author_id)) {
             $booksList = Book::select(['name', 'author_id', 'id'])
@@ -30,12 +30,7 @@ class BookController extends Controller
 
     public function submitBook(BookRequest $request, $id=null)
     {
-        if($id != null) {
-            $book = Book::find($id);
-        }
-        else {
-            $book = new Book();
-        }
+        $book = $id ? Book::find($id) : new Book();
 
         $book->name = $request->input('name');
         $book->created_by = Auth::user()->id;
@@ -66,8 +61,13 @@ class BookController extends Controller
 
     public function deleteBook($id)
     {
-        Book::find($id)->delete();
+        $book = Book::find($id);
+        if(Auth::user()->id == $book->created_by)
+        {
+        $book->delete();
         return redirect()->route('home')
-            ->with('success','Книга удалена');
+            ->with('success','Книга удалена');}
+        else return redirect()->route('home')
+            ->withErrors(['Вы не можете редактировать эту книгу']);
     }
 }
